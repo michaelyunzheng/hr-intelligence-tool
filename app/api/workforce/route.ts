@@ -8,7 +8,17 @@ export async function GET() {
 }
 export async function POST(request:Request) {
  const origin=request.headers.get('origin');
- if(origin&&origin!==new URL(request.url).origin) return Response.json({error:'Cross-origin writes are not allowed.'},{status:403});
+ // Next's internal request URL can use localhost even when the browser uses
+ // 127.0.0.1. Compare against the actual HTTP Host, not that internal URL.
+ if(origin) {
+  let allowed=false;
+  try {
+   const source=new URL(origin);
+   allowed=source.host===(request.headers.get('host')||new URL(request.url).host)
+    &&source.protocol===new URL(request.url).protocol;
+  } catch { /* Malformed origins are rejected. */ }
+  if(!allowed) return Response.json({error:'Cross-origin writes are not allowed.'},{status:403});
+ }
  try {
   const body=await request.text();
   if(body.length>250000) return Response.json({error:'Request exceeds the 250 KB limit.'},{status:413});

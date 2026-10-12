@@ -10,7 +10,7 @@ export const rulesEngine: InferenceEngine = {
     const age=Math.max(0,(now.getTime()-new Date(e.date).getTime())/86400000);
     return total+({project:.5,training:.3,history:.35}[e.type])*(age>365?.65:1);
    },0);
-   return [{skillId:skill.id,level:Math.min(5,Math.max(1,Math.ceil(score*4))),confidence:Math.min(.95,Number((.35+score*.45).toFixed(2))),status:'inferred' as const,evidenceIds:evidence.map(e=>e.id),updatedAt:now.toISOString()}];
+   return [{skillId:skill.id,level:Math.min(5,Math.max(1,Math.ceil(score*4))),confidence:Math.min(.95,Number((.35+score*.45).toFixed(2))),status:'inferred' as const,source:'rules' as const,model:'deterministic-rules',rationale:'Ontology keywords match the cited workplace evidence; review demonstrated proficiency.',evidenceIds:evidence.map(e=>e.id),updatedAt:now.toISOString()}];
   });
  }
 };

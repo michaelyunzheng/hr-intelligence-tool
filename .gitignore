@@ -43,3 +43,5 @@ next-env.d.ts
 # Local synthetic demo persistence
 /data/
 *.tsbuildinfo
+
+!.env.example
